@@ -1,0 +1,134 @@
+<mxfile host="app.diagrams.net">
+  <diagram name="RAG" id="rag1">
+    <mxGraphModel dx="1776" dy="922" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1800" pageHeight="800" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="docs" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;" value="Документы&#xa;PDF / DOCX" vertex="1">
+          <mxGeometry height="70" width="160" x="20" y="100" as="geometry" />
+        </mxCell>
+        <mxCell id="minio" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;" value="Файловое хранилище&#xa;папка raw-docs" vertex="1">
+          <mxGeometry height="70" width="160" x="230" y="100" as="geometry" />
+        </mxCell>
+        <mxCell id="parser" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;" value="1. Ingestion&#xa;Apache Tika + hash файла" vertex="1">
+          <mxGeometry height="70" width="160" x="470" y="100" as="geometry" />
+        </mxCell>
+        <mxCell id="chunk" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;" value="2. Chunking&#xa;~500 токенов, overlap 50" vertex="1">
+          <mxGeometry height="70" width="160" x="710" y="100" as="geometry" />
+        </mxCell>
+        <mxCell id="emb" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;" value="3. Embedding&#xa;multilingual-e5" vertex="1">
+          <mxGeometry height="70" width="160" x="910" y="100" as="geometry" />
+        </mxCell>
+        <mxCell id="pg" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;" value="PostgreSQL + pgvector&#xa;HNSW + GIN (tsvector)" vertex="1">
+          <mxGeometry height="70" width="160" x="1120" y="100" as="geometry" />
+        </mxCell>
+        <mxCell id="user" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;" value="Сотрудник&#xa;(вопрос)" vertex="1">
+          <mxGeometry height="70" width="160" x="20" y="300" as="geometry" />
+        </mxCell>
+        <mxCell id="api" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;" value="RAG API" vertex="1">
+          <mxGeometry height="70" width="160" x="320" y="300" as="geometry" />
+        </mxCell>
+        <mxCell id="qemb" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;" value="Embedding запроса&#xa;(та же модель)" vertex="1">
+          <mxGeometry height="70" width="160" x="620" y="300" as="geometry" />
+        </mxCell>
+        <mxCell id="retr" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;" value="4. Гибридный поиск&#xa;вектор + FTS → RRF" vertex="1">
+          <mxGeometry height="70" width="160" x="1120" y="290" as="geometry" />
+        </mxCell>
+        <mxCell id="llm" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;" value="5. Генерация&#xa;LLM + промпт с чанками" vertex="1">
+          <mxGeometry height="70" width="160" x="500" y="480" as="geometry" />
+        </mxCell>
+        <mxCell id="eval" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;" value="Оценка качества&#xa;Recall@k, MRR, faithfulness" vertex="1">
+          <mxGeometry height="70" width="160" x="890" y="480" as="geometry" />
+        </mxCell>
+        <mxCell id="gold" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;" value="Golden set&#xa;эталонные вопросы-ответы" vertex="1">
+          <mxGeometry height="70" width="160" x="1110" y="480" as="geometry" />
+        </mxCell>
+        <mxCell id="e0" edge="1" parent="1" source="docs" style="endArrow=classic;html=1;rounded=0;fontSize=11;labelBackgroundColor=#ffffff;" target="minio" value="загрузка">
+          <mxGeometry relative="1" x="-0.6923" y="-65" as="geometry">
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e1" edge="1" parent="1" source="minio" style="endArrow=classic;html=1;rounded=0;fontSize=11;labelBackgroundColor=#ffffff;" target="parser" value="новые/изменённые файлы">
+          <mxGeometry relative="1" x="-0.5238" y="-65" as="geometry">
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e2" edge="1" parent="1" source="parser" style="endArrow=classic;html=1;rounded=0;fontSize=11;labelBackgroundColor=#ffffff;" target="chunk" value="текст + метаданные">
+          <mxGeometry relative="1" x="-0.1429" y="-65" as="geometry">
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e3" edge="1" parent="1" source="chunk" style="endArrow=classic;html=1;rounded=0;fontSize=11;labelBackgroundColor=#ffffff;" target="emb" value="чанки">
+          <mxGeometry relative="1" y="-65" as="geometry">
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e4" edge="1" parent="1" source="emb" style="endArrow=classic;html=1;rounded=0;fontSize=11;labelBackgroundColor=#ffffff;" target="pg" value="вектор + текст (upsert)">
+          <mxGeometry relative="1" x="-0.85" y="-75" as="geometry">
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e5" edge="1" parent="1" source="user" style="endArrow=classic;html=1;rounded=0;fontSize=11;labelBackgroundColor=#ffffff;" target="api" value="вопрос">
+          <mxGeometry relative="1" x="-0.2308" y="-45" as="geometry">
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e6" edge="1" parent="1" source="api" style="endArrow=classic;html=1;rounded=0;fontSize=11;labelBackgroundColor=#ffffff;" target="qemb" value="текст вопроса">
+          <mxGeometry relative="1" y="-45" as="geometry">
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e7" edge="1" parent="1" source="qemb" style="endArrow=classic;html=1;rounded=0;fontSize=11;labelBackgroundColor=#ffffff;" target="retr" value="вектор запроса">
+          <mxGeometry relative="1" x="-0.1152" y="20" as="geometry">
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e8" edge="1" parent="1" source="retr" style="endArrow=classic;html=1;rounded=0;fontSize=11;labelBackgroundColor=#ffffff;" target="pg" value="SQL: kNN + FTS">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e9" edge="1" parent="1" source="retr" style="endArrow=classic;html=1;rounded=0;fontSize=11;labelBackgroundColor=#ffffff;" target="llm" value="top-k чанков">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e10" edge="1" parent="1" source="llm" style="endArrow=classic;html=1;rounded=0;fontSize=11;labelBackgroundColor=#ffffff;" target="api" value="ответ с цитатами">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e11" edge="1" parent="1" source="api" style="endArrow=classic;html=1;rounded=0;fontSize=11;labelBackgroundColor=#ffffff;" target="user" value="ответ + ссылки">
+          <mxGeometry relative="1" x="0.2308" y="65" as="geometry">
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e12" edge="1" parent="1" source="retr" style="endArrow=classic;html=1;rounded=0;fontSize=11;labelBackgroundColor=#ffffff;" target="eval" value="найденные чанки">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e13" edge="1" parent="1" source="llm" style="endArrow=classic;html=1;rounded=0;fontSize=11;labelBackgroundColor=#ffffff;" target="eval" value="ответ + контекст">
+          <mxGeometry relative="1" x="0.0435" y="-25" as="geometry">
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e14" edge="1" parent="1" source="gold" style="endArrow=classic;html=1;rounded=0;fontSize=11;labelBackgroundColor=#ffffff;" target="eval" value="эталонные пары">
+          <mxGeometry relative="1" x="-0.0682" y="60" as="geometry">
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="lg0" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=11;" value="Источники / пользователь" vertex="1">
+          <mxGeometry height="30" width="180" x="20" y="700" as="geometry" />
+        </mxCell>
+        <mxCell id="lg1" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;fontSize=11;" value="Обработка" vertex="1">
+          <mxGeometry height="30" width="180" x="210" y="700" as="geometry" />
+        </mxCell>
+        <mxCell id="lg2" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=11;" value="Хранилище" vertex="1">
+          <mxGeometry height="30" width="180" x="400" y="700" as="geometry" />
+        </mxCell>
+        <mxCell id="lg3" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontSize=11;" value="ML-модели" vertex="1">
+          <mxGeometry height="30" width="180" x="590" y="700" as="geometry" />
+        </mxCell>
+        <mxCell id="lg4" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=11;" value="Оценка качества" vertex="1">
+          <mxGeometry height="30" width="180" x="780" y="700" as="geometry" />
+        </mxCell>
+        <mxCell id="lgt" parent="1" style="text;html=1;fontStyle=1;" value="Легенда цветов" vertex="1">
+          <mxGeometry height="25" width="140" x="20" y="670" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
